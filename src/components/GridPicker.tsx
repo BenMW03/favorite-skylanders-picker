@@ -995,7 +995,7 @@ export default function GridPicker() {
       &nbsp;
       <div className="flex flex-col md:flex-row justify-between items-center max-w-6xl mx-auto px-4 gap-4">
         <p className="text-sm text-gray-600">
-          Created with love by <span className="font-semibold text-orange-500">Benjamin "Zyro" Weiglein</span>
+          Created with love by <span className="font-semibold text-orange-500">Zyro</span>
         </p>
         {/*
          <button 
