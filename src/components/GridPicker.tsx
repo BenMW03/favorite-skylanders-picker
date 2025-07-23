@@ -839,6 +839,7 @@ export default function GridPicker() {
     
     <div className="min-h-screen bg-cover bg-center bg-no-repeat p-6 min-h-screen flex flex-col"
          style={{ backgroundImage: "url('')" }}>
+      <title>Favorite Skylanders Picker</title>
       <h1 className="text-5xl bg-clip-text font-pincoya text-transparent bg-gradient-to-t from-[#63BEE8] via-[#FFFFFF] to-[#FFFFFF] mb-6 text-center" 
       style={{
         WebkitTextStroke: "2px #01295D",
