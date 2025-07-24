@@ -794,22 +794,38 @@ const labelConfig: Record<string, { selectedImageSize?: string }> = {
 };
 
 export default function GridPicker() {
-  const [favoritesByElement, setFavoritesByElement] = useState<Record<string, { id: number; src: string }[]>>({});
-  const [favoritesByGame, setFavoritesByGame] = useState<Record<string, { id: number; src: string }[]>>({});
+  const [selectedByCell, setSelectedByCell] = useState<Record<string, { id: number; src: string }>>({});
 
-  const addToFavorites = (element: string, game: string, item: { id: number; src: string }) => {
-    setFavoritesByElement((prev) => {
-      const existing = prev[element] || [];
-      const exists = existing.some((i) => i.id === item.id && i.src === item.src);
-      return { ...prev, [element]: exists ? existing : [...existing, item] };
-    });
-
-    setFavoritesByGame((prev) => {
-      const existing = prev[game] || [];
-      const exists = existing.some((i) => i.id === item.id && i.src === item.src);
-      return { ...prev, [game]: exists ? existing : [...existing, item] };
-    });
+  const handleSelect = (element: string, game: string, item: { id: number; src: string }) => {
+    const key = `${game}-${element}`;
+    setSelectedByCell((prev) => ({
+      ...prev,
+      [key]: item,
+    }));
   };
+  const favoritesByElement: Record<string, { id: number; src: string }[]> = {};
+  const favoritesByGame: Record<string, { id: number; src: string }[]> = {};
+
+  for (const [key, item] of Object.entries(selectedByCell)) {
+    const [game, element] = key.split("-");
+
+    if (!favoritesByElement[element]) {
+      favoritesByElement[element] = [];
+    }
+    if (!favoritesByGame[game]) {
+      favoritesByGame[game] = [];
+    }
+
+    const alreadyInElement = favoritesByElement[element].some(i => i.id === item.id && i.src === item.src);
+    if (!alreadyInElement) {
+      favoritesByElement[element].push(item);
+    }
+
+    const alreadyInGame = favoritesByGame[game].some(i => i.id === item.id && i.src === item.src);
+    if (!alreadyInGame) {
+      favoritesByGame[game].push(item);
+    }
+  }
   
   const colorMap: Record<string, string> = {
     Water: "text-blue-500",
@@ -822,7 +838,7 @@ export default function GridPicker() {
     Magic: "text-purple-600",
     Dark: "text-gray-700",
     Light: "text-yellow-500",
-    Variants: "text-blue-800",
+    Variants: "text-blue-700",
     Gimmicks: "text-green-800",
     Favorites: "text-orange-500"
   };
@@ -964,7 +980,7 @@ return (
                   images={options}
                   columns={columns}
                   selectedItems={[]}
-                  onSelect={(item) => addToFavorites(el.name, game.name, item)}
+                  onSelect={(item) => handleSelect(el.name, game.name, item)}
                   alignLeft={el.name === "Favorites" || el.name === "Variants"}
                   alignRight={shouldAlignRight}
                 />
