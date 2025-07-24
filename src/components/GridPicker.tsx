@@ -827,6 +827,23 @@ export default function GridPicker() {
     Favorites: "text-orange-500"
   };
 
+  const gridRef = useRef<HTMLDivElement>(null);
+
+  const handleDownloadGrid = () => {
+  if (gridRef.current) {
+    html2canvas(gridRef.current, {
+      useCORS: true,
+      scale: 2, // Higher scale for better quality
+      backgroundColor: null,
+    }).then((canvas) => {
+      const link = document.createElement("a");
+      link.download = "skylanders-grid.png";
+      link.href = canvas.toDataURL("image/png");
+      link.click();
+    });
+  }
+};
+
   const getMergedFavorites = (): { id: number; src: string }[] => {
     const byGame = Object.values(favoritesByGame).flat();
     const byElement = Object.values(favoritesByElement).flat();
@@ -835,177 +852,183 @@ export default function GridPicker() {
     return unique;
   };
 
-  return (
-    
-    <div className="min-h-screen bg-cover bg-center bg-no-repeat p-6 min-h-screen flex flex-col"
-         style={{ backgroundImage: "url('')" }}>
-      <h1 className="text-5xl bg-clip-text font-pincoya text-transparent bg-gradient-to-t from-[#63BEE8] via-[#FFFFFF] to-[#FFFFFF] mb-6 text-center" 
+return (
+  <div
+    className="min-h-screen bg-cover bg-center bg-no-repeat p-6 flex flex-col"
+    style={{ backgroundImage: "url('')" }}
+  >
+    <h1
+      className="text-5xl bg-clip-text font-pincoya text-transparent bg-gradient-to-t from-[#63BEE8] via-[#FFFFFF] to-[#FFFFFF] mb-6 text-center"
       style={{
         WebkitTextStroke: "2px #01295D",
         fontFamily: "Pincoya Black"
-      }}>
-        Pick your favorite Skylanders
-      </h1>
-    <div>
-      </div>
-      <div
-        className="grid gap-4 flex-grow"
-        style={{ paddingLeft: "110px", gridTemplateColumns: `140px repeat(${elements.length}, 100px)` }}
-      >
-        <div></div>
-        {elements.map((el) => (
-          <div
-            key={el.name}
-            className="w-[100px] h-[100px] flex flex-col items-center justify-center text-center"
-          >
-            <img src={el.icon} alt={el.name} className="w-20 h-20 mb-1" />
-            <span className={`text-xs font-semibold ${colorMap[el.name] || "text-white"}`}>
-              {el.name}
-            </span>
+      }}
+    >
+      Pick your favorite Skylanders
+    </h1>
+
+    <div></div>
+<div ref={gridRef}>
+      <div className="overflow-x-auto">
+    <div
+      className="grid gap-2 flex-grow"
+      style={{
+        gridTemplateColumns: `minmax(100px, 140px) repeat(${elements.length}, minmax(80px, 1fr))`,
+      }}
+    >
+      {/* Top-left empty cell */}
+      <div></div>
+
+      {/* Element Icons */}
+      {elements.map((el) => (
+        <div
+          key={el.name}
+          className="aspect-square flex flex-col items-center justify-center text-center"
+        >
+          <img src={el.icon} alt={el.name} className="w-3/4 h-3/4 object-contain mb-1" />
+          <span className={`text-xs font-semibold ${colorMap[el.name] || "text-white"}`}>
+            {el.name}
+          </span>
+        </div>
+      ))}
+
+      {/* Game rows and grid cells */}
+      {games.map((game) => (
+        <React.Fragment key={game.name}>
+          <div className="flex items-center justify-center">
+            <img src={game.logo} alt={game.name} className="max-h-20 max-w-full object-contain" />
           </div>
-        ))}
-        
-        {games.map((game) => (
-          <React.Fragment key={game.name}>
-            <div className="w-[140px] h-[100px] flex items-center justify-center">
-              <img src={game.logo} alt={game.name} className="max-h-[100px] max-w-full" />
-            </div>
 
-            {elements.map((el) => {
-              const key = `${game.name}-${el.name}`;
-              const isFavoritesRow = game.name === "Favorites";
-              const isFavoritesColumn = el.name === "Favorites";
-              const isMergedCell = isFavoritesRow && isFavoritesColumn;
+          {elements.map((el) => {
+            const key = `${game.name}-${el.name}`;
+            const isFavoritesRow = game.name === "Favorites";
+            const isFavoritesColumn = el.name === "Favorites";
+            const isMergedCell = isFavoritesRow && isFavoritesColumn;
+            const isWaterColumn = el.name === "Water";
+            const isLastGameRow = game.name === games[games.length - 1].name;
+            const shouldAlignRight = isWaterColumn && !isLastGameRow;
 
-              if (isMergedCell) {
-                const mergedFavorites = getMergedFavorites();
-                return (
-                  <div
-                    key={key}
-                    className="w-[100px] h-[100px] flex items-center justify-center border-2 border-yellow-400 rounded bg-white"
-                  >
-                    <ImageDropdown
-                      images={[]}
-                      selectedItems={mergedFavorites}
-                      columns={3}
-                      onSelect={() => {}}
-                      alignLeft={true}
-                      dropUp={true}
-                    />
-                  </div>
-                );
-              }
-
-              if (isFavoritesRow) {
-                const colFavorites = favoritesByElement[el.name] || [];
-                return (
-                  <div
-                    key={key}
-                    className="w-[100px] h-[100px] flex items-center justify-center border border-gray-300 rounded bg-white"
-                  >
-                    <ImageDropdown
-                      images={[]}
-                      selectedItems={colFavorites}
-                      columns={3}
-                      onSelect={() => {}}
-                      alignLeft={true}
-                    />
-                  </div>
-                );
-              }
-
-              if (isFavoritesColumn) {
-                const rowFavorites = favoritesByGame[game.name] || [];
-                return (
-                  <div
-                    key={key}
-                    className="w-[100px] h-[100px] flex items-center justify-center border border-gray-300 rounded bg-white"
-                  >
-                    <ImageDropdown
-                      images={[]}
-                      selectedItems={rowFavorites}
-                      columns={3}
-                      onSelect={() => {}}
-                      alignLeft={true}
-                    />
-                  </div>
-                );
-              }
-
-              const options = optionsByCell[key] || [];
-              const twoColumnGames = new Set(["Spyro's Adventure", "Superchargers"]);
-              const columns = twoColumnGames.has(game.name) && el.name !== "Variants" ? 2 : 3;
-
+            if (isMergedCell) {
+              const mergedFavorites = getMergedFavorites();
               return (
-                <div
-                  key={key}
-                  className="w-[100px] h-[100px] flex items-center justify-center border border-gray-300 rounded bg-white"
-                >
+                <div key={key} className="aspect-square border-2 border-yellow-400 rounded bg-white flex items-center justify-center">
                   <ImageDropdown
-                    images={options}
-                    columns={columns}
-                    selectedItems={[]}
-                    onSelect={(item) => addToFavorites(el.name, game.name, item)}
-                    alignLeft={el.name === "Favorites"}
+                    images={[]}
+                    selectedItems={mergedFavorites}
+                    columns={3}
+                    onSelect={() => {}}
+                    dropUp={true}
+                    alignLeft={true}
                   />
                 </div>
               );
-            })}
-          </React.Fragment>
-        ))}
-      </div>
-      <div className="mt-10 grid grid-cols-6 gap-4 max-w-6xl mx-auto">
-        {[
-          "Game",
-          "Adventure Pack",
-          "Gimmick",
-          "Trophy",
-          "Battle Class",
-          "Vehicle",
-          "Element",
-          "Giant",
-          "Swapper",
-          "Trapable Enemy",
-          "Master Sensei",
-          "Mini",
-        ].map((label) => {
+            }
 
-          const config = labelConfig[label] || {};
 
-          return (
-            <div
-              key={label}
-              className="bg-white bg-opacity-90 rounded shadow p-2 text-center font-semibold text-gray-800 flex flex-col items-center justify-between w-[175px] h-[125px]"
-            >
-              <span className="text-sm">{label}</span>
-              <ImageDropdown
-                images={labelImages[label] || []}
-                selectedItems={[]}
-                columns={3}
-                onSelect={() => {}}
-                alignLeft={true}
-                dropUp={true}
-                hideSelectedLabel={true}
-                selectedImageSize={config.selectedImageSize}
-              />
-            </div>
-          );
-        })}
-      </div>
-      &nbsp;
-      <div className="flex flex-col md:flex-row justify-between items-center max-w-6xl mx-auto px-4 gap-4">
-        <p className="text-sm text-gray-600">
-          Created with love by <span className="font-semibold text-orange-500">Benjamin "Zyro" Weiglein</span>
-        </p>
-        {/*
-         <button 
-          onClick={() => handleDownloadPage()}
-          className="bg-blue-600 text-white px-4 py-2 rounded shadow hover:bg-blue-700 transition"
-        >
-          Download Your Selections
-        </button>
-        */}
-      </div>
+
+            if (isFavoritesRow) {
+              const colFavorites = favoritesByElement[el.name] || [];
+              return (
+                <div key={key} className="aspect-square border border-gray-300 rounded bg-white flex items-center justify-center">
+                  <ImageDropdown
+                    images={[]}
+                    selectedItems={colFavorites}
+                    columns={3}
+                    onSelect={() => {}}
+                    alignLeft={!["Water"].includes(el.name)}
+                  />
+                </div>
+              );
+            }
+
+            if (isFavoritesColumn) {
+              const rowFavorites = favoritesByGame[game.name] || [];
+              return (
+                <div key={key} className="aspect-square border border-gray-300 rounded bg-white flex items-center justify-center">
+                  <ImageDropdown
+                    images={[]}
+                    selectedItems={rowFavorites}
+                    columns={3}
+                    onSelect={() => {}}
+                    alignLeft={true}
+                  />
+                </div>
+              );
+            }
+
+            const options = optionsByCell[key] || [];
+            const twoColumnGames = new Set(["Spyro's Adventure", "Superchargers"]);
+            const columns = twoColumnGames.has(game.name) && el.name !== "Variants" ? 2 : 3;
+
+            return (
+              <div
+                key={key}
+                className="aspect-square flex items-center justify-center border border-gray-300 rounded bg-white"
+              >
+                <ImageDropdown
+                  images={options}
+                  columns={columns}
+                  selectedItems={[]}
+                  onSelect={(item) => addToFavorites(el.name, game.name, item)}
+                  alignLeft={el.name === "Favorites" || el.name === "Variants"}
+                  alignRight={shouldAlignRight}
+                />
+              </div>
+            );
+          })}
+        </React.Fragment>
+      ))}
     </div>
-  );
-}
+    <div className="mt-10 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-6 gap-4 max-w-6xl mx-auto">
+    {[
+      "Game",
+      "Adventure Pack",
+      "Gimmick",
+      "Trophy",
+      "Battle Class",
+      "Vehicle",
+      "Element",
+      "Giant",
+      "Swapper",
+      "Trapable Enemy",
+      "Master Sensei",
+      "Mini",
+    ].map((label) => {
+      const config = labelConfig[label] || {};
+
+      return (
+        <div
+          key={label}
+          className="bg-white bg-opacity-90 rounded shadow p-2 text-center font-semibold text-gray-800 flex flex-col items-center justify-between w-[175px] h-[125px]"
+        >
+          <span className="text-sm">{label}</span>
+          <ImageDropdown
+            images={labelImages[label] || []}
+            selectedItems={[]}
+            columns={3}
+            onSelect={() => {}}
+            dropUp={true}
+            hideSelectedLabel={true}
+            selectedImageSize={config.selectedImageSize}
+          />
+        </div>
+      );
+    })}
+  </div>
+</div>
+<div className="w-full mt-6 px-4">
+  <p className="text-sm text-gray-600 text-center">
+    Created with love by <span className="font-semibold text-orange-500">Zyro</span>
+  </p>
+</div>
+<div className="w-full text-center mt-6">
+  <button
+    onClick={handleDownloadGrid}
+    className="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700 transition"
+  >
+    Download Your Selections
+  </button>
+</div>
+</div>
+</div>
+)}

@@ -12,6 +12,7 @@ interface Props {
   onSelect?: (image: ImageOption) => void;
   selectedItems?: ImageOption[];
   alignLeft?: boolean;
+  alignRight?: boolean;
   dropUp?: boolean;
   hideSelectedLabel?: boolean;
   selectedImageSize?: string;
@@ -24,6 +25,7 @@ export default function ImageDropdown({
   selectedItems = [],
   alignLeft = false,
   selectedImageSize,
+  alignRight= false,
 }: Props) {
   const [open, setOpen] = useState(false);
   const [dropUp, setDropUp] = useState(false);
@@ -64,6 +66,14 @@ export default function ImageDropdown({
     onSelect?.(item);
   };
 
+  const alignmentClass = alignRight
+  ? "right-[25%]" // Adjust this value as needed for a nice inward look
+  : alignLeft
+  ? "right-0 -translate-x-2"
+  : alignRight
+  ? "left-auto right-0"
+  : "left-0";
+
   const allOptions = [...images, ...selectedItems];
 
   return (
@@ -86,7 +96,7 @@ export default function ImageDropdown({
           </div>
         )}
       </button>
-
+        
       {open && (
         <div
           ref={dropdownRef}
