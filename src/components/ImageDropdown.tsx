@@ -67,7 +67,7 @@ export default function ImageDropdown({
   };
 
   const alignmentClass = alignRight
-  ? "right-[25%]" // Adjust this value as needed for a nice inward look
+  ? "right-[25%]"
   : alignLeft
   ? "right-0 -translate-x-2"
   : alignRight

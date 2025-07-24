@@ -833,7 +833,7 @@ export default function GridPicker() {
   if (gridRef.current) {
     html2canvas(gridRef.current, {
       useCORS: true,
-      scale: 2, // Higher scale for better quality
+      scale: 2,
       backgroundColor: null,
     }).then((canvas) => {
       const link = document.createElement("a");
@@ -876,10 +876,9 @@ return (
         gridTemplateColumns: `minmax(100px, 140px) repeat(${elements.length}, minmax(80px, 1fr))`,
       }}
     >
-      {/* Top-left empty cell */}
+
       <div></div>
 
-      {/* Element Icons */}
       {elements.map((el) => (
         <div
           key={el.name}
@@ -892,7 +891,6 @@ return (
         </div>
       ))}
 
-      {/* Game rows and grid cells */}
       {games.map((game) => (
         <React.Fragment key={game.name}>
           <div className="flex items-center justify-center">
@@ -923,8 +921,6 @@ return (
                 </div>
               );
             }
-
-
 
             if (isFavoritesRow) {
               const colFavorites = favoritesByElement[el.name] || [];
