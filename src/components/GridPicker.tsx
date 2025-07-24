@@ -915,7 +915,6 @@ return (
                     selectedItems={mergedFavorites}
                     columns={3}
                     onSelect={() => {}}
-                    dropUp={true}
                     alignLeft={true}
                   />
                 </div>
@@ -1003,14 +1002,15 @@ return (
             selectedItems={[]}
             columns={3}
             onSelect={() => {}}
-            dropUp={true}
             hideSelectedLabel={true}
+            dropUp={true}
             selectedImageSize={config.selectedImageSize}
           />
         </div>
       );
     })}
   </div>
+</div>
 </div>
 <div className="w-full mt-6 px-4">
   <p className="text-sm text-gray-600 text-center">
@@ -1024,7 +1024,6 @@ return (
   >
     Download Your Selections
   </button>
-</div>
 </div>
 </div>
 )}

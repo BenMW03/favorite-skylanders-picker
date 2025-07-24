@@ -2,11 +2,39 @@
 @tailwind components;
 @tailwind utilities;
 body {
-  @apply bg-gray-100; /* or any Tailwind background color class */
+  @apply bg-gray-100;
 }
+
 @font-face {
   font-family: "Pincoya Black";
   src: url("/public/fonts/pincoyablack.otf") format("truetype");
   font-weight: normal;
   font-style: normal;
+}
+
+.dropdown-container {
+  position: relative;
+  display: inline-block;
+}
+
+.dropdown-menu {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  z-index: 100;
+}
+
+.dropdown-menu.drop-up {
+  top: auto;
+  bottom: 100%;
+}
+
+.drop-down {
+  top: 100%;
+  position: absolute;
+}
+
+.drop-up {
+  bottom: 100%;
+  position: absolute;
 }

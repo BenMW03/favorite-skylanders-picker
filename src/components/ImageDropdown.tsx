@@ -25,10 +25,10 @@ export default function ImageDropdown({
   selectedItems = [],
   alignLeft = false,
   selectedImageSize,
-  alignRight= false,
+  alignRight = false,
+  dropUp = false,
 }: Props) {
   const [open, setOpen] = useState(false);
-  const [dropUp, setDropUp] = useState(false);
   const [selected, setSelected] = useState<null | ImageOption>(null);
   const ref = useRef<HTMLDivElement>(null);
   const dropdownRef = useRef<HTMLDivElement>(null);
@@ -49,16 +49,6 @@ export default function ImageDropdown({
     document.addEventListener("mousedown", handleOutside);
     return () => document.removeEventListener("mousedown", handleOutside);
   }, []);
-
-  useEffect(() => {
-    if (open && ref.current && dropdownRef.current) {
-      const buttonRect = ref.current.getBoundingClientRect();
-      const dropdownHeight = dropdownRef.current.scrollHeight;
-      const spaceBelow = window.innerHeight - buttonRect.bottom;
-      const spaceAbove = buttonRect.top;
-      setDropUp(dropdownHeight > spaceBelow && spaceAbove > dropdownHeight);
-    }
-  }, [open]);
 
   const handleSelect = (item: ImageOption) => {
     setSelected(item);
@@ -100,7 +90,7 @@ export default function ImageDropdown({
       {open && (
         <div
           ref={dropdownRef}
-          className={`absolute ${dropUp ? "bottom-full mb-2" : "mt-1"} ${ alignLeft ? "right-0" : "left-0"
+          className={`absolute ${(dropUp) ? "bottom-full mb-2" : "mt-1"} ${ alignLeft ? "right-0" : "left-0"
           } bg-white border shadow-lg rounded grid gap-2 p-2 z-10 ${columnClass} ${scrollClass}`}
         >
 
