@@ -852,7 +852,6 @@ export default function GridPicker() {
     return unique;
   };
 
-<<<<<<< HEAD
 return (
   <div
     className="min-h-screen bg-cover bg-center bg-no-repeat p-6 flex flex-col"
@@ -860,14 +859,6 @@ return (
   >
     <h1
       className="text-5xl bg-clip-text font-pincoya text-transparent bg-gradient-to-t from-[#63BEE8] via-[#FFFFFF] to-[#FFFFFF] mb-6 text-center"
-=======
-  return (
-    
-    <div className="min-h-screen bg-cover bg-center bg-no-repeat p-6 min-h-screen flex flex-col"
-         style={{ backgroundImage: "url('')" }}>
-      <title>Favorite Skylanders Picker</title>
-      <h1 className="text-5xl bg-clip-text font-pincoya text-transparent bg-gradient-to-t from-[#63BEE8] via-[#FFFFFF] to-[#FFFFFF] mb-6 text-center" 
->>>>>>> ada867acac2cd1fd6782d22a0ef754fef3ce5dec
       style={{
         WebkitTextStroke: "2px #01295D",
         fontFamily: "Pincoya Black"
@@ -934,7 +925,6 @@ return (
             }
 
 
-<<<<<<< HEAD
 
             if (isFavoritesRow) {
               const colFavorites = favoritesByElement[el.name] || [];
@@ -988,42 +978,6 @@ return (
           })}
         </React.Fragment>
       ))}
-=======
-          return (
-            <div
-              key={label}
-              className="bg-white bg-opacity-90 rounded shadow p-2 text-center font-semibold text-gray-800 flex flex-col items-center justify-between w-[175px] h-[125px]"
-            >
-              <span className="text-sm">{label}</span>
-              <ImageDropdown
-                images={labelImages[label] || []}
-                selectedItems={[]}
-                columns={3}
-                onSelect={() => {}}
-                alignLeft={true}
-                dropUp={true}
-                hideSelectedLabel={true}
-                selectedImageSize={config.selectedImageSize}
-              />
-            </div>
-          );
-        })}
-      </div>
-      &nbsp;
-      <div className="flex flex-col md:flex-row justify-between items-center max-w-6xl mx-auto px-4 gap-4">
-        <p className="text-sm text-gray-600">
-          Created with love by <span className="font-semibold text-orange-500">Zyro</span>
-        </p>
-        {/*
-         <button 
-          onClick={() => handleDownloadPage()}
-          className="bg-blue-600 text-white px-4 py-2 rounded shadow hover:bg-blue-700 transition"
-        >
-          Download Your Selections
-        </button>
-        */}
-      </div>
->>>>>>> ada867acac2cd1fd6782d22a0ef754fef3ce5dec
     </div>
     <div className="mt-10 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-6 gap-4 max-w-6xl mx-auto">
     {[
