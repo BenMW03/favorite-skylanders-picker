@@ -803,8 +803,20 @@ export default function GridPicker() {
       [key]: item,
     }));
   };
+
   const favoritesByElement: Record<string, { id: number; src: string }[]> = {};
   const favoritesByGame: Record<string, { id: number; src: string }[]> = {};
+
+  Object.entries(selectedByCell).forEach(([key, item]) => {
+    const [game, element] = key.split("-");
+
+    if (!favoritesByElement[element]) favoritesByElement[element] = [];
+    if (!favoritesByGame[game]) favoritesByGame[game] = [];
+
+    favoritesByElement[element].push(item);
+    favoritesByGame[game].push(item);
+  });
+
 
   for (const [key, item] of Object.entries(selectedByCell)) {
     const [game, element] = key.split("-");
@@ -846,19 +858,19 @@ export default function GridPicker() {
   const gridRef = useRef<HTMLDivElement>(null);
 
   const handleDownloadGrid = () => {
-  if (gridRef.current) {
-    html2canvas(gridRef.current, {
-      useCORS: true,
-      scale: 2,
-      backgroundColor: null,
-    }).then((canvas) => {
-      const link = document.createElement("a");
-      link.download = "skylanders-grid.png";
-      link.href = canvas.toDataURL("image/png");
-      link.click();
-    });
-  }
-};
+    if (gridRef.current) {
+      html2canvas(gridRef.current, {
+        useCORS: true,
+        scale: 2,
+        backgroundColor: null,
+      }).then((canvas) => {
+        const link = document.createElement("a");
+        link.download = "skylanders-grid.png";
+        link.href = canvas.toDataURL("image/png");
+        link.click();
+      });
+    }
+  };
 
   const getMergedFavorites = (): { id: number; src: string }[] => {
     const byGame = Object.values(favoritesByGame).flat();
@@ -869,6 +881,7 @@ export default function GridPicker() {
   };
 
 return (
+
   <div
     className="min-h-screen bg-cover bg-center bg-no-repeat p-6 flex flex-col"
     style={{ backgroundImage: "url('')" }}
@@ -882,6 +895,11 @@ return (
     >
       Pick your favorite Skylanders
     </h1>
+
+  <head>
+  <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-1359140865107399"
+    crossOrigin="anonymous"></script>
+  </head>
 
     <div></div>
 <div ref={gridRef}>
@@ -937,35 +955,69 @@ return (
               );
             }
 
-            if (isFavoritesRow) {
-              const colFavorites = favoritesByElement[el.name] || [];
-              return (
-                <div key={key} className="aspect-square border border-gray-300 rounded bg-white flex items-center justify-center">
-                  <ImageDropdown
-                    images={[]}
-                    selectedItems={colFavorites}
-                    columns={3}
-                    onSelect={() => {}}
-                    alignLeft={!["Water"].includes(el.name)}
-                  />
-                </div>
-              );
-            }
+if (isFavoritesRow) {
+  const cellKey = `Favorites-${el.name}`;
+  const selected = selectedByCell[cellKey];
 
-            if (isFavoritesColumn) {
-              const rowFavorites = favoritesByGame[game.name] || [];
-              return (
-                <div key={key} className="aspect-square border border-gray-300 rounded bg-white flex items-center justify-center">
-                  <ImageDropdown
-                    images={[]}
-                    selectedItems={rowFavorites}
-                    columns={3}
-                    onSelect={() => {}}
-                    alignLeft={true}
-                  />
-                </div>
-              );
-            }
+  const isUsedElsewhere = Object.entries(selectedByCell).some(([key, value]) => {
+    const [gameName, elementName] = key.split("-");
+    return (
+      gameName !== "Favorites" &&
+      elementName === el.name &&
+      selected &&
+      value.id === selected.id &&
+      value.src === selected.src
+    );
+  });
+
+  const colFavorites = selected && !isUsedElsewhere ? [selected] : [];
+
+  return (
+    <div key={key} className="aspect-square border border-gray-300 rounded bg-white flex items-center justify-center">
+      <ImageDropdown
+        images={[]}
+        selectedItems={colFavorites}
+        columns={3}
+        onSelect={(item) => handleSelect(el.name, "Favorites", item)}
+        alignLeft={!["Water"].includes(el.name)}
+      />
+    </div>
+  );
+}
+
+
+
+if (isFavoritesColumn) {
+  const cellKey = `${game.name}-Favorites`;
+  const selected = selectedByCell[cellKey];
+
+  const isUsedElsewhere = Object.entries(selectedByCell).some(([key, value]) => {
+    const [gameName, elementName] = key.split("-");
+    return (
+      gameName === game.name &&
+      elementName !== "Favorites" &&
+      selected &&
+      value.id === selected.id &&
+      value.src === selected.src
+    );
+  });
+
+  const rowFavorites = selected && !isUsedElsewhere ? [selected] : [];
+
+  return (
+    <div key={key} className="aspect-square border border-gray-300 rounded bg-white flex items-center justify-center">
+      <ImageDropdown
+        images={[]}
+        selectedItems={rowFavorites}
+        columns={3}
+        onSelect={(item) => handleSelect("Favorites", game.name, item)}
+        alignLeft={true}
+      />
+    </div>
+  );
+}
+
+
 
             const options = optionsByCell[key] || [];
             const twoColumnGames = new Set(["Spyro's Adventure", "Superchargers"]);
@@ -1006,7 +1058,7 @@ return (
       "Mini",
     ].map((label) => {
       const config = labelConfig[label] || {};
-
+      
       return (
         <div
           key={label}
