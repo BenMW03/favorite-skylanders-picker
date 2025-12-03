@@ -881,7 +881,7 @@ export default function GridPicker() {
   };
 
 return (
-<head>
+
   <div
     className="min-h-screen bg-cover bg-center bg-no-repeat p-6 flex flex-col"
     style={{ backgroundImage: "url('')" }}
@@ -895,8 +895,6 @@ return (
     >
       Pick your favorite Skylanders
     </h1>
-
-  <meta name="google-adsense-account" content="ca-pub-1359140865107399"></meta>
 
     <div></div>
 <div ref={gridRef}>
@@ -1091,5 +1089,4 @@ if (isFavoritesColumn) {
   </button>
 </div>
 </div>
-</head>
 )}
